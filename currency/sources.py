@@ -1,9 +1,10 @@
 import urllib
 from functools import lru_cache
 from typing import Dict, List
-from  lxml import html
+
 import requests
 from bs4 import BeautifulSoup
+from lxml import html
 
 from .models import BankModel, Bid, CurrencySource, Currency
 
