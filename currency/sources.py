@@ -1,6 +1,6 @@
 import urllib
 from functools import lru_cache
-from typing import Dict, List
+from typing import Callable, Dict, List
 
 import requests
 from bs4 import BeautifulSoup
@@ -60,6 +60,7 @@ def _get_ofb_data() -> List[Bid]:
 
     return bids
 
+
 def _get_nbu_data() -> List[Bid]:
     url: str = "https://nbu.uz/exchange-rates/json/"
     bank_data: Dict = requests.get(url).json()
@@ -74,6 +75,7 @@ def _get_nbu_data() -> List[Bid]:
             if bank_currency.get("code") in Currency.names()
     ]
 
+
 def _get_kapital_bank_data() -> List[Bid]:
     url = "https://kapitalbank.uz/ru/services/exchange-rates"
     soup = BeautifulSoup(urllib.request.urlopen(url).read())
@@ -87,19 +89,18 @@ def _get_kapital_bank_data() -> List[Bid]:
             for i in bank_currency_tag.text.split("\n")
             if i
         ]
-        bid = Bid(
-            currency=bank_currency[0],
-            buy=bank_currency[1],
-            sell=bank_currency[2],
-        )
+
+        currency, buy, sell, *_ = bank_currency
+        bid = Bid(currency=currency, buy=buy, sell=sell,)
         bids.append(bid)
 
     return bids
 
 
-CurrencySourceMap: Dict = {
-    CurrencySource.CENTRAL_BANK: _get_cb_data,
+CurrencySourceMap: Dict[CurrencySource, Callable] = {
+
     CurrencySource.OFB: _get_ofb_data,
     CurrencySource.NBU: _get_nbu_data,
+    CurrencySource.CENTRAL_BANK: _get_cb_data,
     CurrencySource.KAPITAL_BANK: _get_kapital_bank_data,
 }
