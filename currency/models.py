@@ -1,56 +1,6 @@
-from dataclasses import dataclass, fields, Field, MISSING
+from dataclasses import dataclass
 from enum import IntEnum, unique
-from typing import Dict, List
-
-
-def custom_field(
-    default=MISSING,
-    default_factory=MISSING,
-    init=True,
-    import_name: str = None,
-    repr=True,
-    hash=None,
-    compare=True,
-    metadata=None
-) -> Field:
-
-    if metadata is None:
-        metadata = {}
-
-    if import_name:
-        metadata["import_name"] = import_name
-
-    return Field(
-        default=default,
-        default_factory=default_factory,
-        init=init,
-        repr=repr,
-        hash=hash,
-        compare=compare,
-        metadata=metadata,
-    )
-
-
-@dataclass
-class Datamodel:
-
-    @classmethod
-    def import_dict(cls, source):
-        result: Dict = {}
-
-        source = None
-        for fld in fields(cls):
-            sourceName = fld.metadata.get("import_name", None)
-
-            if fld.default is not MISSING:
-                source = fld.default
-            if sourceName:
-                source = sourceName
-            if fld.default is MISSING and source is None:
-                raise Exception(f"Cannot import dict for class: <{cls.__name__}>. Missing field '{fld.name}'")
-            result[fld.name] = source
-
-        return cls(**result)
+from typing import List
 
 
 @unique
@@ -77,7 +27,7 @@ class Currency(EnumBase):
 
 
 @dataclass
-class Bid(Datamodel):
+class Bid:
     currency: Currency
     buy: str = "-"
     sell: str = "-"

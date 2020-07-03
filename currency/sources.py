@@ -1,19 +1,23 @@
 import urllib
 from functools import lru_cache
 from typing import Callable, Dict, List
-
+import bs4
+import sys
 import requests
 from bs4 import BeautifulSoup
 from lxml import html
+
+
+bs4.sys = sys  # BS4 fails with `sys` not found without this monkeypatch
 
 from .models import BankModel, Bid, CurrencySource, Currency
 
 
 @lru_cache(maxsize=256)
-def get_source_currency(currency_Source: CurrencySource) -> BankModel:
+def get_source_currency(currency_source: CurrencySource) -> BankModel:
     return BankModel(
-        bank_name=currency_Source.name,
-        currency_data=CurrencySourceMap[currency_Source](),
+        bank_name=currency_source.name,
+        currency_data=CurrencySourceMap[currency_source](),
     )
 
 
@@ -25,10 +29,7 @@ def _get_cb_data() -> List[Bid]:
     bank_data: Dict = requests.get(url).json()
 
     return [
-        Bid(
-            currency=bank_currency.get("Ccy"),
-            buy=bank_currency.get("Rate")
-        )
+        Bid(currency=bank_currency.get("Ccy"), buy=bank_currency.get("Rate"))
         for bank_currency in bank_data
         if bank_currency.get("Ccy") in Currency.names()
     ]
@@ -48,14 +49,10 @@ def _get_ofb_data() -> List[Bid]:
         T = tr_elements[j]
 
         currency_name = _normalize(T[0])[:3]
-        buy = _normalize(T[2])
-        sell = _normalize(T[3])
+        buy_rate = _normalize(T[2])
+        sell_rate = _normalize(T[3])
 
-        bid = Bid(
-            currency=currency_name,
-            buy=buy,
-            sell=sell,
-        )
+        bid = Bid(currency_name, buy_rate, sell_rate)
         bids.append(bid)
 
     return bids
@@ -72,7 +69,7 @@ def _get_nbu_data() -> List[Bid]:
             sell=bank_currency.get("nbu_cell_price"),
         )
         for bank_currency in bank_data
-            if bank_currency.get("code") in Currency.names()
+        if bank_currency.get("code") in Currency.names()
     ]
 
 
@@ -90,15 +87,12 @@ def _get_kapital_bank_data() -> List[Bid]:
             if i
         ]
 
-        currency, buy, sell, *_ = bank_currency
-        bid = Bid(currency=currency, buy=buy, sell=sell,)
-        bids.append(bid)
-
+        currency_name, buy_rate, sell_rate, *_ = bank_currency
+        bids.append(Bid(currency_name, buy_rate, sell_rate))
     return bids
 
 
 CurrencySourceMap: Dict[CurrencySource, Callable] = {
-
     CurrencySource.OFB: _get_ofb_data,
     CurrencySource.NBU: _get_nbu_data,
     CurrencySource.CENTRAL_BANK: _get_cb_data,
