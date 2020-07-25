@@ -20,10 +20,26 @@ class EnumBase(IntEnum):
 
 
 class Currency(EnumBase):
-    EUR = (1, "Euro", "Евро",)
-    USD = (2, "United States dollar", "Доллары США",)
-    GBP = (3, "British Pound", "Фунт Стерлинг",)
-    RUB = (4, "Russian Roubles", "Российский Рубль",)
+    EUR = (
+        1,
+        "Euro",
+        "Евро",
+    )
+    USD = (
+        2,
+        "United States dollar",
+        "Доллары США",
+    )
+    GBP = (
+        3,
+        "British Pound",
+        "Фунт Стерлинг",
+    )
+    RUB = (
+        4,
+        "Russian Roubles",
+        "Российский Рубль",
+    )
 
 
 @dataclass
@@ -34,10 +50,26 @@ class Bid:
 
 
 class CurrencySource(EnumBase):
-    CENTRAL_BANK = (1, "Central Bank", "Центральный Банк",)
-    OFB = (2, "Orient Finance Bank", "Ориент Финанс Банк",)
-    NBU = (3, "National Bank of Uzbekistan", "Национальный Банк Узбекистана",)
-    KAPITAL_BANK = (4, "Kapital Bank", "Капитал Банк",)
+    CENTRAL_BANK = (
+        1,
+        "Central Bank",
+        "Центральный Банк",
+    )
+    OFB = (
+        2,
+        "Orient Finance Bank",
+        "Ориент Финанс Банк",
+    )
+    NBU = (
+        3,
+        "National Bank of Uzbekistan",
+        "Национальный Банк Узбекистана",
+    )
+    KAPITAL_BANK = (
+        4,
+        "Kapital Bank",
+        "Капитал Банк",
+    )
 
 
 @dataclass
