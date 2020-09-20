@@ -1,11 +1,12 @@
-import urllib
-from functools import lru_cache
-from typing import Callable, Dict, DefaultDict, List
-import bs4
 import sys
-from logging import getLogger
-import requests
+import urllib
 from collections import defaultdict
+from functools import lru_cache
+from logging import getLogger
+from typing import Callable, Dict, DefaultDict, List
+
+import bs4
+import requests
 from bs4 import BeautifulSoup
 from lxml import html
 

@@ -1,12 +1,10 @@
+import traceback
 from http import HTTPStatus
-from logging import getLogger
 
 from flask import Flask, jsonify, json
 
 from api import currency
 from settings import ProductionConfig
-
-import traceback
 
 
 def create_app(config_object=ProductionConfig):
