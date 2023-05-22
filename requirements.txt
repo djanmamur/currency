@@ -2,5 +2,5 @@ bs4==0.0.1
 flask==1.1.2
 lxml==4.6.2
 pytest==5.4.2
-requests==2.23.0
+requests==2.31.0
 gunicorn==20.0.4
